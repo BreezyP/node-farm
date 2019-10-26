@@ -1,5 +1,6 @@
 const fs = require('fs');
 const http = require('http');
+const url = require('url');
 
 
 /* FILE READING AND WRITING
@@ -23,7 +24,27 @@ fs.readFile('./txt/start.txt', 'utf-8', (err, data) => {
 //SERVER
 
 const server = http.createServer((req, res) => {
- res.end('Hello from the server!')
+
+ const pathName = req.url;
+
+ if(pathName === '/' || pathName === '/overview'){
+  res.end('This  is the OVERVIEW');
+ } else if(pathName === '/product') {
+  res.end('This is the PRODUCT');
+ }else if(pathName === '/api') {
+
+  fs.readFile(`${__dirname}/dev-data/data.json`, 'utf-8', (err, data) => {
+   const productData = JSON.parse(data);
+   console.log(productData);
+  });
+
+  res.end('API');
+
+ } else {
+  res.writeHead(404);
+  res.end('Page not found');
+ }
+
 });
 
 server.listen(3000, '127.0.0.1', () =>{
