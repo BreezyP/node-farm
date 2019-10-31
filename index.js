@@ -23,23 +23,39 @@ fs.readFile('./txt/start.txt', 'utf-8', (err, data) => {
 
 //SERVER
 
+const tempOverview = fs.readFileSync(`${__dirname}/templates/overview.html`, 'utf-8');
+const tempProduct = fs.readFileSync(`${__dirname}/templates/product.html`, 'utf-8');
+const tempCard = fs.readFileSync(`${__dirname}/templates/template-card.html`, 'utf-8');
+
+
+
+
+const data = fs.readFileSync(`${__dirname}/dev-data/data.json`, 'utf-8');
+const dataObj = JSON.parse(data);
+
 const server = http.createServer((req, res) => {
 
  const pathName = req.url;
 
+ //OVERVIEW
+
  if(pathName === '/' || pathName === '/overview'){
-  res.end('This  is the OVERVIEW');
+
+  res.writeHead('200', {'Content-type': 'text/html'});
+  res.end(tempOverview);
+
+  //PRODUCT PAGE
  } else if(pathName === '/product') {
   res.end('This is the PRODUCT');
+
+  //API
  }else if(pathName === '/api') {
 
-  fs.readFile(`${__dirname}/dev-data/data.json`, 'utf-8', (err, data) => {
-   const productData = JSON.parse(data);
-   console.log(productData);
-  });
+  res.writeHead(200, {'Content-type': 'application/json'});
+  res.end(data);
 
-  res.end('API');
 
+  //404 NOT FOUND
  } else {
   res.writeHead(404);
   res.end('Page not found');
